@@ -4,7 +4,14 @@ const AuthController =  require('../controllers/auth.controller')
 const { authenticateToken } = require('../middlewares/auth.middleware')
 const TokenController = require('../controllers/token.controller')
 const { PostController, PutController, GetController, DeleteController } =  require('../controllers/doctors.controller')
+
+// get routes
+route.get('/', (req, res)=>{
+    res.status(200).json({message:'welcome', status:200})
+})
+
 // post routes
+
 // users post routes
 route.post('/register', [registrationValidator], AuthController.Register)
 route.post('/login', [loginValidator, authenticateToken], AuthController.login)
