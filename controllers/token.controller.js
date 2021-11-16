@@ -1,6 +1,7 @@
 const { signAccessToken, signRefreshToken, timer, authenticateToken } = require('../middlewares/auth.middleware')
 const Users = require('../schemas/registration.schema')
 const Token = require('../schemas/token.schema')
+const   mongoose = require('mongoose')
 
 class TokenController {
     
@@ -8,7 +9,9 @@ class TokenController {
     
         try {
 
-            const user =  await Token.findById(req.params.id)
+            const _id = mongoose.Types.ObjectId.createFromHexString(req.params.id)
+
+            const user =  await Token.findById(_id)
             if(user){
             const userRefreshToken = await signRefreshToken(req.params.id)
             const userAgent = req.headers['user-agent']; 
@@ -21,7 +24,7 @@ class TokenController {
             
             await Token.findByIdAndUpdate(user._id, {$set:token})
             
-            res.status(200).json({status:200, token:token})
+            res.status(200).redirect('https://hospitalbookapp.web.app/auth')
 
             }
             
