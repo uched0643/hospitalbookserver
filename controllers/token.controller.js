@@ -9,8 +9,8 @@ class TokenController {
     
         try {
 
-            const _id = mongoose.Types.ObjectId.createFromHexString(req.params.id)
-
+            let _id = mongoose.Types.ObjectId
+            _id = new _id(req.params.id.trim())
             const user =  await Token.findById(_id)
             if(user){
             const userRefreshToken = await signRefreshToken(req.params.id)
