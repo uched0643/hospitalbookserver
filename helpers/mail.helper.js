@@ -21,9 +21,10 @@ const sendMail = async(user, user_id) => {
             <p> 
             ${user} please Click on the button to Activate Your Account
             </p>
-            <a href='http://${process.env.HOST}:${process.env.port}/activate/:${user_id}'>
-             Activate 
-            </a>
+            <form method="POST" action="https://hospital-book-server.cleverapps.io/activate/:${user_id}">
+                <button type="submit">Activate</button>
+            </form>
+           
             `
         })
         

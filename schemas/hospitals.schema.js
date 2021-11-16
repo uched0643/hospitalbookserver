@@ -20,11 +20,7 @@ const Hospitals = new Schema({
         
     },
 
-    address:{
-        type: String,
-        required: [true, 'This field is required']
-        
-    }
+   
 
     /* 
     hospital has profile and description

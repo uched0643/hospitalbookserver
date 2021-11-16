@@ -26,12 +26,11 @@ class AuthController{
                 tel:tel.trim()
             }
 
-            // await sendMail(_, newUser.email)
             const createUser= await Users.create(newUser)
             await sendMail( newUser.email, createUser._id)
-            const token = signAccessToken(createUser._id)
+            // const token = signAccessToken(createUser._id)
 
-            res.status(200).json({status:200, message:'OK', newUser:createUser})
+            res.status(200).redirect('https://hospitalbookapp.web.app/activate-account')
 
         } catch (error) {
     
