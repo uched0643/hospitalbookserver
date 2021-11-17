@@ -26,8 +26,19 @@ const loginValidator = [
 
 
 const doctorValidator = [
-    check('gender'), check('dateOfBirth'), check('department'), check('speciality'), check('experience')
-
+    check("email", 'Invalid Email').trim().isEmail().bail(),
+    
+    check("password", 'Password must contain at least mixed case letter. a special character and atleast a number and it must be atleast 8 and maximum 20').isLength({
+        min: 8, max: 20
+    }).custom((value) => /^(?=.*?[0-9])(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[#?!@$%^&*\-_]).{8,}$/.test(value)).bail(),
+   
+    check('gender').trim().isEmpty(), 
+    check('date_of_birth').trim().custom(value => /^[a-zA-Z]+$/i.test(value)),
+    check('specialty').trim().isEmpty(), 
+    check('experience').trim().isEmpty(),
+    check('address').trim().isEmpty(),
+    check('description').trim().isEmpty(), 
+    
 ]
 
-module.exports = { registrationValidator , loginValidator}
+module.exports = { registrationValidator , loginValidator, doctorValidator}

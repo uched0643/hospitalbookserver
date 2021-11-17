@@ -21,13 +21,13 @@ const sendMail = async(user, user_id) => {
             <p> 
             ${user} please Click on the button to Activate Your Account
             </p>
-            <form method="POST" action="https://hospital-book-server.cleverapps.io/activate/:${user_id}">
+            <form method="POST" action="http://localhost:8080/activate/${user_id}">
                 <button type="submit">Activate</button>
             </form>
            
             `
         })
-        
+        // https://hospital-book-server.cleverapps.io/activate/:${user_id}
         console.log('success');
         
     } catch (error) {

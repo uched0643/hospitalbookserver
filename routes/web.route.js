@@ -1,5 +1,5 @@
 const route = require('express').Router();
-const {registrationValidator, loginValidator} = require('../middlewares/validation.middleware')
+const {registrationValidator, loginValidator, doctorValidator} = require('../middlewares/validation.middleware')
 const AuthController =  require('../controllers/auth.controller')
 const { authenticateToken } = require('../middlewares/auth.middleware')
 const TokenController = require('../controllers/token.controller')
@@ -14,11 +14,11 @@ route.get('/', (req, res)=>{
 
 // users post routes
 route.post('/register', [registrationValidator], AuthController.Register)
-route.post('/login', [loginValidator, authenticateToken], AuthController.login)
+route.post('/login', [loginValidator], AuthController.login)
 route.post('/activate/:id', TokenController.signToken)
 
 // doctors post routes
-route.post('/doctors/register', [authenticateToken], PostController.createDOctor)
+route.post('/doctors/register',  PostController.createDOctor)
 route.post('/doctors/appointments', [authenticateToken], PostController.appointment)
 route.post('/doctors/consultation', [authenticateToken], PostController.consultation)
 route.post('/doctors/create-folder', [authenticateToken], PostController.createFolder)

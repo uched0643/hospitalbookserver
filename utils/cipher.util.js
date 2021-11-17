@@ -10,9 +10,13 @@ const hashPassword = (password) => {
 const verifyHash = (password, original) => {
     const originalHash = original.split('$')[1];
     const salt = original.split('$')[0];
-    const hash = pbkdf2Sync(password, salt, 2048, 32, 'sha512').toString('hex')
+    let hash = pbkdf2Sync(password, salt, 2048, 32, 'sha512').toString('hex')
 
-    (hash !== originalHash)? false : true
+    if(originalHash !== hash){
+        return false
+    }else{
+        return true
+    }
 }
 
 module.exports = {hashPassword, verifyHash}

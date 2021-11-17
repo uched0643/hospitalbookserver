@@ -18,6 +18,11 @@ const Doctors = new Schema({
         required: [true, 'This field is required']
     },
 
+    experience:{
+        type: String,
+        required: [true, 'This field is required'],
+    },
+
     address: {
         type: Array,
         required: [true, 'This field is required']

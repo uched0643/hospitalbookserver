@@ -7,6 +7,7 @@ const Consultations = require('../schemas/consultation.schema');
 const GetHospitals = require('../schemas/relationships/doctor_belongs_to_many_hospitals')
 const Hospitals = require('../schemas/hospitals.schema')
 const Department = require('../schemas/departments.schema')
+const firebaseController =  require('./firestore.controller')
 
 class DoctorsPostController {
 
@@ -15,17 +16,23 @@ class DoctorsPostController {
             const user_email = await Users.find({ email: req.body.email.trim() })
             const user_password = verifyHash(req.body.password, user_email.password)
 
-            if (!user_email && !user_password) return res.status(400).json({ status: 400, message: 'Invalid email or password' })
+            // if (!user_email && !user_password) return res.status(400).json({ status: 400, message: 'Invalid email or password' })
 
-            const newDoctor = {
-                user_id: user_email._id,
-                gender: req.body.gender.trim().toLowerCase(),
-                date_of_birth: req.body.date_of_birth.trim(),
-                specialty: req.body.specialty.trim(),
-                address: req.body.address.trim()
-            }
-
-            await Doctors.create(newDoctor)
+            // const newDoctor = {
+            //     user_id: user_email._id,
+            //     gender: req.body.gender.trim().toLowerCase(),
+            //     date_of_birth: req.body.date_of_birth.trim(),
+            //     specialty: req.body.specialty,
+            //     experience:req.body.experience.trim(),
+            //     address: req.body.address
+            // }
+            // const firestoreData = {
+            //     doctor_id:newDoctor.user_id,
+            //     profile_img:req.body.profile_img,
+            //     description:req.body.description.trim()
+            // }
+            // await Doctors.create(newDoctor)
+            // await firebaseController.newRecord(firestoreData, 'Doctors')
             res.status(200).json({ status: 200, message: 'OK' })
 
         } catch (error) {

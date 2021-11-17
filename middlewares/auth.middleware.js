@@ -29,19 +29,24 @@ const signRefreshToken = (_id) => signToken(_id, 300)
 
 const authenticateToken = async(req, res, next) => {
     try {
-        const authHeader = req.headers['authorization'];
-        const token = authHeader && authHeader.split(' ')[1];
-    
+        const authHeader = req.headers['authorization']
+        const token = authHeader && authHeader.split(' ')[1]
+        // console.log(token);
+        // if (token == null) return res.sendStatus(401)
         if(!token) return res.status(401).json({status:401, message:'invalid request'})
     
         verify(token, PUBLIC_KEY, {algorithms:"RS256", ignoreExpiration:false }, (err, user) => {
-            if(err) return res.status(401).json({status: 401, message:err})
+            if(err) {return res.status(401).json({status: 401, message:err})}
             
             const { sub } = user
-            if(!sub) return res.status(500).json({status:500, message:'request header data could not be found'})
-            // next()
+            if(!sub) {return res.status(500).json({status:500, message:'request header data could not be found'})
+          }
             const expires = timer(user.exp)
-            if(expires) return res.redirect('/login')
+            if(expires) {return res.redirect('http://localhost:8080/login')}
+          
+            req.user = user
+
+            next()
             
         })
         
