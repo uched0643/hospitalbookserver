@@ -32,5 +32,6 @@ route.delete('/doctors/deleteAppointments/:id', [authenticateToken], DeleteContr
 route.delete('/doctors/deleteConsultations/:id', [authenticateToken], DeleteController.deletePastConsultations)
 route.delete('/delete/folder/:id', [authenticateToken], DeleteController.deleteFolder)
 
-
+route.get('/doctors-info', [authenticateToken], GetController.getDoctor)
+route.get('/doctors/folder', [authenticateToken], GetController.getFolders)
 module.exports = {route}

@@ -9,10 +9,10 @@ const Appointments = new Schema({
         type: String,
         required: [true, 'This field is required']
     },
-    reason: {
-        type: String,
-        required: [true, 'This field is required']
-    },
+    // reason: {
+    //     type: String,
+    //     required: [true, 'This field is required']
+    // },
     dateString: {
         type: String,
         required: [true, 'This field is required']

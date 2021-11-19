@@ -25,8 +25,8 @@ class NodeFirestore{
 
      newRecord(data, collectionName) {
         return new Promise(async (resolve, reject) => {
-         const collectionName = db.collection(collectionName)
-                const record = collectionName.add(data)
+         const collection_name = db.collection(collectionName)
+                const record = collection_name.doc(`${data.doctor_id}`).set({data})
                 record.then((result) => {
                     resolve(result)
                 }).catch((err) => {
