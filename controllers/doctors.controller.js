@@ -135,6 +135,10 @@ class DoctorsPostController {
             const {name} = await req.body
             const doctor = await Doctors.findById(req.user.sub)
             const user = await Users.findOne({_id:doctor.user_id})
+            let folders = await db.collection('Folders').doc(`${req.user.sub}`).collection(`${req.user.sub}$${user.email}`).get()
+            const folderNames = folders.docs.filter(a => a.id == `${name}`)
+            if(folderNames) return res.status(400).json({status:400, message:'Folder name already exist'})
+            
             await db.collection('Folders').doc(`${req.user.sub}`).collection(`${req.user.sub}$${user.email}`).doc(`${name}`).set({})
 
             const token = await signRefreshToken(doctor._id)
@@ -194,6 +198,7 @@ class DoctorsGetController {
         try {
             const doctor = await Doctors.findById(req.user.sub)
             const user = await Users.findOne({_id:doctor.user_id})
+            
             let folders = await db.collection('Folders').doc(`${req.user.sub}`).collection(`${req.user.sub}$${user.email}`).get()
             const folderNames = folders.docs.map(response => response.id)
             folders = folders.docs.map(response => response.data())
