@@ -12,7 +12,7 @@ const signToken = async (_id, exp) =>  {
             sub: _id,
             iat: Date.now()
         }
-        const signedToken =sign(payload, PRIVATE_KEY, { expiresIn: exp, algorithm: 'RS256' })
+        const signedToken = sign(payload, PRIVATE_KEY, { expiresIn: exp, algorithm: 'RS256' })
         return {
             token: "Bearer " + signedToken,
             expiresIn: exp,
@@ -41,8 +41,8 @@ const authenticateToken = async(req, res, next) => {
             const { sub } = user
             if(!sub) {return res.status(500).json({status:500, message:'request header data could not be found'})
           }
-            const expires = timer(user.exp)
-            if(expires) {return res.redirect('http://localhost:8080/login')}
+            const expires = timer(user.iat)
+            if(expires) {return res.status(403).json({status:403, message:'Authorization restrictions'})}
           
             req.user = user
 

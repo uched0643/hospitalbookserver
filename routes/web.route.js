@@ -4,6 +4,7 @@ const AuthController =  require('../controllers/auth.controller')
 const { authenticateToken } = require('../middlewares/auth.middleware')
 const TokenController = require('../controllers/token.controller')
 const { PostController, PutController, GetController, DeleteController } =  require('../controllers/doctors.controller')
+const { PatientGetController, PatientPostController, PatientPutController, PatientDeleteController } = require('../controllers/patient.controller')
 
 // get routes
 route.get('/', (req, res)=>{
@@ -17,21 +18,50 @@ route.post('/register', [registrationValidator], AuthController.Register)
 route.post('/login', [loginValidator], AuthController.login)
 route.post('/activate/:id', TokenController.signToken)
 
-// doctors post routes
-route.post('/doctors/register',  PostController.createDOctor)
+// DOCTORS ROUTES
+// POST
+route.post('/doctors/register',[authenticateToken],  PostController.createDOctor)
 route.post('/doctors/appointments', [authenticateToken], PostController.appointment)
 route.post('/doctors/consultation', [authenticateToken], PostController.consultation)
 route.post('/doctors/create-folder', [authenticateToken], PostController.createFolder)
 
-// put route
+// PUT 
 route.put('/doctors/edit-appointment/:id', [authenticateToken], PutController.editAppointment)
 route.put('/doctors/register/:id', [authenticateToken], PutController.updateProfile)
 
-// delete route
+// DELETE
 route.delete('/doctors/deleteAppointments/:id', [authenticateToken], DeleteController.deletePastAppointments)
 route.delete('/doctors/deleteConsultations/:id', [authenticateToken], DeleteController.deletePastConsultations)
 route.delete('/delete/folder/:id', [authenticateToken], DeleteController.deleteFolder)
 
+// GET
 route.get('/doctors-info', [authenticateToken], GetController.getDoctor)
 route.get('/doctors/folder', [authenticateToken], GetController.getFolders)
+
+
+// PATIENT ROUTES
+// POST
+route.post('patient/register', [authenticateToken], PatientPostController.createPatient)
+route.post('patient/login', [authenticateToken], PatientPostController.login)
+route.post('patient/appointments', [authenticateToken], PatientPostController.patientAppointmentRequest)
+route.post('patient/consultation', [authenticateToken], PatientPostController.patientConsultationRequest)
+
+// GET
+route.get('/patient',[authenticateToken], PatientGetController.getpatientData)
+route.get('/appointments', [authenticateToken], PatientGetController.getPatientsAppointments)
+route.get('/consultations',[authenticateToken], PatientGetController.getPatientsConsultaions)
+route.get('/events', [authenticateToken], PatientGetController.getPatientsEvents)
+
+// PUT
+route.put('/appointments/:id', [authenticateToken], PatientPutController.updateAppointment)
+route.put('/consultations/appointments/:id', [authenticateToken], PatientPutController.updateConsultaion)
+route.put('/events/:id', [authenticateToken], PatientPutController.updateEvent)
+route.put('/patient/:id', [authenticateToken], PatientPutController.updateProfile)
+
+// DELETE
+route.delete('/request/:id', [authenticateToken], PatientDeleteController.deleteRequest)
+route.delete('/event/:id', [authenticateToken], PatientDeleteController.deleteEvent)
+
+
 module.exports = {route}
+

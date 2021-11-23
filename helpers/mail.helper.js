@@ -1,4 +1,4 @@
-const { createTransport,  } =  require('nodemailer')
+const { createTransport  } =  require('nodemailer')
 require('dotenv').config()
 
 const transport = createTransport({
@@ -6,9 +6,22 @@ const transport = createTransport({
     auth:{
         user:process.env.MAIL_USERNAME,
         pass:process.env.MAIL_PASS,
-  
     }
 })
+
+const sendEmail = async (userEmail, subject, htmlMessage) => {
+    try {
+        await transport.sendMail({
+            from:process.env.MAIL_USERNAME,
+            to:userEmail,
+            subject:subject,
+            html:htmlMessage
+        })
+    } catch (error) {
+        throw new Error(error)
+    }
+}
+
 
 const sendMail = async(user, user_id) => {
     try {
@@ -28,11 +41,11 @@ const sendMail = async(user, user_id) => {
             `
         })
         // https://hospital-book-server.cleverapps.io/activate/:${user_id}
-        console.log('success');
+        
         
     } catch (error) {
         throw new Error(error)
     }
 }
 
-module.exports = { sendMail }
+module.exports = { sendMail, sendEmail }

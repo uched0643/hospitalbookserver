@@ -9,6 +9,7 @@ const Consultations = new Schema({
         required:[true,'This field is required'],
         min:[3, 'Required 6 but got {VALUE}']
     },
+   
     
 
     /* img, and videos and reason are stored in firebase */ 
