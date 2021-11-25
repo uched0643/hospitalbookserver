@@ -24,10 +24,13 @@ route.post('/doctors/register',[authenticateToken],  PostController.createDOctor
 route.post('/doctors/appointments', [authenticateToken], PostController.appointment)
 route.post('/doctors/consultation', [authenticateToken], PostController.consultation)
 route.post('/doctors/create-folder', [authenticateToken], PostController.createFolder)
+route.post('/doctor/request/:id', [authenticateToken], PostController.requestTpHospital)
+route.post('/doctor/login', [authenticateToken], PostController.login)
 
 // PUT 
 route.put('/doctors/edit-appointment/:id', [authenticateToken], PutController.editAppointment)
-route.put('/doctors/register/:id', [authenticateToken], PutController.updateProfile)
+route.put('/doctor/consultations/:id', [authenticateToken], PutController.editConsultation)
+route.put('/doctors/register', [authenticateToken], PutController.updateProfile)
 
 // DELETE
 route.delete('/doctors/deleteAppointments/:id', [authenticateToken], DeleteController.deletePastAppointments)
