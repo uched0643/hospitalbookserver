@@ -30,14 +30,15 @@ class AuthController {
             }
 
             const createUser = await Users.create(newUser)
-            await sendMail(newUser.email, createUser._id)
+
             await sendEmail(newUser.email, `Account Activation`, `
-            
+                Please Click On this Button to Activate Your Account
+                <a href="https://hospital-book-server.cleverapps.io/activate/${createUser._id}" style="background:blue; color:white;"> Activate</a>
             `)
             // const token = signAccessToken(createUser._id)
 
             // res.status(200).redirect('https://hospitalbookapp.web.app/activate-account')
-            res.status(200).json({status:200, message:'Ok'})
+            res.status(200).json({status:200, message:newUser})
         } catch (error) {
 
             res.status(500).json({ status: 500, message: error.message })

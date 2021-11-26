@@ -16,7 +16,7 @@ route.get('/', (req, res)=>{
 // users post routes
 route.post('/register', [registrationValidator], AuthController.Register)
 route.post('/login', [loginValidator], AuthController.login)
-route.post('/activate/:id', TokenController.signToken)
+route.get('/activate/:id', TokenController.signToken)
 
 // DOCTORS ROUTES
 // POST
