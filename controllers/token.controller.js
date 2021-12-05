@@ -2,6 +2,8 @@ const { signAccessToken, signRefreshToken, timer, authenticateToken } = require(
 const Users = require('../schemas/registration.schema')
 const Token = require('../schemas/token.schema')
 const   mongoose = require('mongoose')
+require('dotenv').config()
+const URL = process.env.FRONTENDDEVURL||process.env.FRONTENDPRODURL || `https://hospitalbookapp.web.app/`
 
 class TokenController {
     
@@ -25,11 +27,11 @@ class TokenController {
             
             await Token.findByIdAndUpdate(user._id, {$set:token})
             
-            res.status(200).redirect('https://hospitalbookapp.web.app/auth')
+            res.status(200).redirect(`${URL}auth`)
             
             }else{
 
-                const _user = await Users.findByIdAndUpdate(req.params.id, { $set: { active: true } })
+                await Users.findByIdAndUpdate(req.params.id, { $set: { active: true } })
                 const userAccessToken = await signAccessToken(req.params.id)
                 
                 const userAgent = req.headers['user-agent']; 
@@ -44,7 +46,7 @@ class TokenController {
                     await Token.create(userClient)
                     
                     // res.status(200).json({ status: 200, token: userAccessToken, message: { active: true, user_client:userClient.user_agent } })
-                    res.status(200).redirect('https://hospitalbookapp.web.app/auth')  
+                    res.status(200).redirect(`${URL}auth`)
             }
             
         } catch (error) {

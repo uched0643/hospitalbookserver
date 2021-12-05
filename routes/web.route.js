@@ -5,7 +5,7 @@ const { authenticateToken } = require('../middlewares/auth.middleware')
 const TokenController = require('../controllers/token.controller')
 const { PostController, PutController, GetController, DeleteController } =  require('../controllers/doctors.controller')
 const { PatientGetController, PatientPostController, PatientPutController, PatientDeleteController } = require('../controllers/patient.controller')
-
+const HomeController = require('../controllers/home.controller')
 // get routes
 route.get('/', (req, res)=>{
     res.status(200).json({message:'welcome', status:200})
@@ -66,5 +66,6 @@ route.delete('/request/:id', [authenticateToken], PatientDeleteController.delete
 route.delete('/event/:id', [authenticateToken], PatientDeleteController.deleteEvent)
 
 
-module.exports = {route}
+route.get('/all-doctor', HomeController.getAllDoctors)
 
+module.exports = {route}
