@@ -7,28 +7,6 @@ const Events = new Schema({
         type: String,
         required: [true, 'This field is required'],
     },
-    eventDescription:String,
-    allDay:{
-        type:Boolean,
-        default:true
-    },
-    importance:{
-        type: String,
-        required: [true, 'This field is required'],
-        default:'Not Important'
-    },
-    start:{
-        type: String,
-        required: [true, 'This field is required'],
-    },
-    end:{
-        type: String,
-        required: [true, 'This field is required'],
-    },
-    startDate:{
-        type: String,
-        required: [true, 'This field is required'],
-    },
     endDate:{
         type: String,
         required: [true, 'This field is required'],

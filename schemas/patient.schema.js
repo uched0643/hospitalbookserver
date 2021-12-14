@@ -12,7 +12,10 @@ const Patients = new Schema({
         type: String,
         required: [true, 'This field is required'],
     },
-
+    occupation :{
+        type: String,
+        required: [true, 'This field is required'],
+    },
     address: {
         type: Array,
         required: [true, 'This field is required']

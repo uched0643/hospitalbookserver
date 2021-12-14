@@ -13,7 +13,7 @@ const Patient = require("../schemas/patient.schema");
 const { sendEmail } = require("../helpers/mail.helper");
 const requestSchema = require("../schemas/request.schema");
 const hospitalsSchema = require("../schemas/hospitals.schema");
-const loginSchema = require("../schemas/login.schema");
+const Login = require("../schemas/login.schema");
 
 class DoctorsPostController {
   async createDOctor(req, res) {
@@ -91,11 +91,6 @@ class DoctorsPostController {
         return res
           .status(400)
           .json({ status: 400, message: "Patient Not Found" });
-
-      if (!doctor)
-        return res
-          .status(400)
-          .json({ status: 400, message: "Invalid Credentials" });
 
       const newAppointment = {
         patient_id: patient._id,
@@ -243,48 +238,152 @@ class DoctorsPostController {
 
   async login(req, res) {
     try {
+      const { email, password } = req.body;
+      const user = await Users.findOne({
+        email: email.trim(),
+      });
 
-        const { email, password } = req.body
-        let user= await Users.findOne({
-            email: email.trim(),
-        })
-        let doctor = await Doctors.findOne({ user_id:user._id })
-        const hashPassword = verifyHash(password, user.password)
-        
-        const isLogged = await loginSchema.find({ email: email.trim() })
+      const doctor = await Doctors.findOne({ user_id: user._id });
+      const hashPassword = verifyHash(password, user.password);
 
-        if(!doctor)  return res.status(400).json({ status: 400, error_message: 'Doctor Does not Exist', message: email });
+      if (!user.active)
+        return res
+          .status(400)
+          .json({ status: 400, message: "Please Activate your account" });
 
-        if (!user && !hashPassword) return res.status(400).json({ status: 400, error_message: 'Invalid username or password', message: email });
+      if (!user && !hashPassword)
+        return res.status(400).json({
+          status: 400,
+          error_message: "Invalid username or password",
+          message: email,
+        });
 
-        const { user_agent } = isLogged[isLogged.length-1];
-        
-         let login = {
-            user_id: user._id,
-            email: user.email,
-            user_agent: req.headers['user-agent'],
-        }
-        
-        await loginSchema.create(login)
-        const token = signRefreshToken(login.user_id)
+      const isLogged = await Login.find({ email: email.trim() });
 
-        if (user_agent != req.headers['user-agent']) {
+      let login = {
+        user_id: user._id,
+        email: user.email,
+        user_agent: req.headers["user-agent"],
+      };
 
-            // senduser mail logged in from new device
-            await sendEmail(login.email, `Logged In From A New Device`,    `
-            <p> Logged In Recently At ${new Date()} From ${login.user_agent} </p>
-            `)
-            res.status(200).json({ status: 200, message: login, token: token })
-        }
-        else {              
-            res.status(200).json({ status: 200, message: login, token: token })
-        }
+      await Login.create(login);
+      const token = await signRefreshToken(doctor._id);
 
+      if (
+        isLogged[isLogged.length - 1].user_agent != req.headers["user-agent"]
+      ) {
+        await sendEmail(
+          login.email,
+          `Login`,
+          `
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta property="og:title" content="Verify Your Email">
+ 
+</head>
+
+<body leftmargin="0" marginwidth="0" topmargin="0" marginheight="0" offset="0" style="width:100% ;-webkit-text-size-adjust:none;margin:0;padding:0;background-color:#FFF;">
+  <center>
+    <table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%" id="backgroundTable" style="height:100% ;margin:0;padding:0;width:100% ;background-color:#FFF;">
+      <tr>
+        <td align="center" valign="top" style="border-collapse:collapse;">
+          <table border="0" cellpadding="10" cellspacing="0" width="450" id="templatePreheader" style="background-color:#FAFAFA;">
+            <tr>
+              <td valign="top" class="preheaderContent" style="border-collapse:collapse;">
+             
+                <table border="0" cellpadding="10" cellspacing="0" width="100%">
+                  <tr>
+                    <td valign="top" style="border-collapse:collapse;">
+                   
+                    </td>
+                  </tr>
+                </table>
+             
+              </td>
+            </tr>
+          </table>
+          <table border="0" cellpadding="0" cellspacing="0" width="450" id="templateContainer" style="border:1px none #DDDDDD;background-color:#FFFFFF;">
+            <tr>
+              <td align="center" valign="top" style="border-collapse:collapse;">
+             
+                <table border="0" cellpadding="0" cellspacing="0" width="450" id="templateHeader" style="background-color:#FFFFFF;border-bottom:0;">
+                  <tr>
+                    <td class="headerContent centeredWithBackground" style="border-collapse:collapse;color:#202020;font-family:Arial;font-size:34px;font-weight:bold;line-height:100%;padding:0;text-align:center;vertical-align:middle;    padding-bottom: 0px; padding-top: 0px;  background: #1D4ED8; overflow: hidden;">
+                 
+                      <img width="130" src="../utils/logo.jpeg" style="height: 105px !important;
+                      line-height: 100%;
+                      outline: none;
+                      text-decoration: none;
+                      transform: scale(2);" id="headerImage campaign-icon">
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td align="center" valign="top" style="border-collapse:collapse;">
+               
+                <table border="0" cellpadding="0" cellspacing="0" width="450" id="templateBody">
+                  <tr>
+                    <td valign="top" class="bodyContent" style="border-collapse:collapse;background-color:#FFFFFF;">
+                      
+                      <table border="0" cellpadding="20" cellspacing="0" width="100%" style="padding-bottom:10px;">
+                        <tr>
+                          <td valign="top" style="padding-bottom:1rem;border-collapse:collapse;" class="mainContainer">
+                            <div style="text-align:center;color:#505050;font-family:Arial;font-size:14px;line-height:150%;">
+                              <h1 class="h1" style="color:#202020;display:block;font-family:Arial;font-size:24px;font-weight:bold;line-height:100%;margin-top:20px;margin-right:0;margin-bottom:20px;margin-left:0;text-align:center;">Logged With New Client</h1>
+
+                              <p>You Logged In On <br> ${login.user_agent}</p>
+                            </div>
+                          </td>
+                        </tr>
+                      
+                      </table>
+                     
+                    </td>
+                  </tr>
+                </table>
+               
+              </td>
+            </tr>
+           
+            <tr>
+              <td align="center" valign="top" style="border-collapse:collapse;">
+              
+                <table border="0" cellpadding="10" cellspacing="0" width="450" id="templateFooter" style="background-color:#FFFFFF;border-top:0;">
+                  <tr>
+                    <td valign="top" class="footerContent" style="padding-left:0;border-collapse:collapse;background-color:#fafafa;">
+                      <div style="text-align:center;color:#757373;font-family:Arial;font-size:11px;line-height:150%;">
+                        <p style="text-align:center;margin:0;margin-top:2px;">Record | Hospital,Douala Bali | Copyright © 2021 | All rights reserved</p>
+                      </div>
+                     
+                    </td>
+                  </tr>
+                </table>
+            
+              </td>
+            </tr>
+          </table>
+          <br>
+        </td>
+      </tr>
+    </table>
+  </center>
+</body>
+
+</html>
+                `
+        );
+      }
+      res.status(200).json({ status: 200, message: login, token: token });
     } catch (error) {
-        res.status(500).json({ status: 500, message: error.message })
+      res.status(500).json({ status: 500, message: error.message });
     }
-}
-
+  }
+  
 }
 
 class DoctorsGetController {
@@ -323,7 +422,6 @@ class DoctorsGetController {
       res.status(500).json({ status: 500, message: error.message });
     }
   }
-  
 
   async getFolders(req, res) {
     try {
@@ -462,10 +560,9 @@ class DoctorsDeleteController {
   async deleteFolder(req, res, next) {
     try {
     } catch (error) {
-        res.status(500).json({ status: 500, message: error.message });
+      res.status(500).json({ status: 500, message: error.message });
     }
   }
-
 }
 
 module.exports = {

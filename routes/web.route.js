@@ -45,15 +45,15 @@ route.get('/doctors/folder', [authenticateToken], GetController.getFolders)
 // PATIENT ROUTES
 // POST
 route.post('patient/register', [authenticateToken], PatientPostController.createPatient)
-route.post('patient/login', [authenticateToken], PatientPostController.login)
-route.post('patient/appointments', [authenticateToken], PatientPostController.patientAppointmentRequest)
+route.post('patient/login', PatientPostController.login)
+route.post('patient/appointments/:id', [authenticateToken], PatientPostController.patientAppointmentRequest)
 route.post('patient/consultation', [authenticateToken], PatientPostController.patientConsultationRequest)
 
 // GET
 route.get('/patient',[authenticateToken], PatientGetController.getpatientData)
-route.get('/appointments', [authenticateToken], PatientGetController.getPatientsAppointments)
+route.get('patient/appointments', [authenticateToken], PatientGetController.getPatientsAppointments)
 route.get('/consultations',[authenticateToken], PatientGetController.getPatientsConsultaions)
-route.get('/events', [authenticateToken], PatientGetController.getPatientsEvents)
+route.get('patient/events', [authenticateToken], PatientGetController.getPatientsEvents)
 
 // PUT
 route.put('/appointments/:id', [authenticateToken], PatientPutController.updateAppointment)
@@ -67,5 +67,8 @@ route.delete('/event/:id', [authenticateToken], PatientDeleteController.deleteEv
 
 
 route.get('/all-doctor', HomeController.getAllDoctors)
+
+
+// PATIENTS
 
 module.exports = {route}
